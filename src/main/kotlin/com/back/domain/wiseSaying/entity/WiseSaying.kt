@@ -1,5 +1,7 @@
 package com.back.domain.wiseSaying.entity
 
+import com.back.global.standard.ut.JsonUtil.jsonStrToMap
+
 data class WiseSaying(
     var id: Int = 0,
     var content: String,
@@ -16,7 +18,7 @@ data class WiseSaying(
     }
 
     val jsonStr: String
-        get() {
+        get() { // 커스텀 getter
             return """
                 {
                     "id": $id,
@@ -25,6 +27,18 @@ data class WiseSaying(
                 }
             """.trimIndent()
         }
+
+    companion object{
+        fun fromJsonStr(jsonStr: String): WiseSaying{
+            val map = jsonStrToMap(jsonStr)
+
+            return WiseSaying(
+                id = map["id"] as Int,
+                content = map["content"] as String,
+                author = map["author"] as String
+            )
+        }
+    }
 
 
 }

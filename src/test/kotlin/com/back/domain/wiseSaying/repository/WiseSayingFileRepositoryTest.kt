@@ -38,6 +38,16 @@ class WiseSayingFileRepositoryTest {
         assertThat(filePath).isNotNull
     }
 
+    @Test
+    fun `findById`(){
+        val wiseSaying = wiseSayingRepository
+            .save(WiseSaying(content = "나의 죽음을 적들에게 알라지 마라.", author = "충무공 이순신"))
+
+        val foundWiseSaying = wiseSayingRepository.findById(wiseSaying.id)
+
+        assertThat(foundWiseSaying).isEqualTo(wiseSaying)
+    }
+
 
 
 }
