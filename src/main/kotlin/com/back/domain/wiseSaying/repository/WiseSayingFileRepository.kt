@@ -6,9 +6,6 @@ import java.nio.file.Path
 
 class WiseSayingFileRepository : WiseSayingRepository {
 
-    var lastId = 0
-    val wiseSayings = mutableListOf<WiseSaying>()
-
     val tableDirPath: Path
         get(){
             return AppConfig.dbDirPath.resolve("wiseSaying")
@@ -18,9 +15,42 @@ class WiseSayingFileRepository : WiseSayingRepository {
         return wiseSaying
             .takeIf { it.isNew() }
             .also {
-                wiseSaying.id = ++lastId
+                wiseSaying.id = genNextId()
                 saveOnDisk(wiseSaying)
             } ?: wiseSaying
+    }
+
+    fun saveLastId(lastId: Int){
+        mkTableDirsIfNotExists()
+        tableDirPath.resolve("lastId.txt")
+            .toFile()
+            .writeText(lastId.toString())
+
+    }
+
+    fun loadLastId():Int{
+
+//        return try{
+//            tableDirPath.resolve("lastId.txt")
+//                .toFile()
+//                .readText()
+//                .toInt()
+//        }catch (e: Exception){
+//            0
+//        }
+        return kotlin.runCatching {
+            tableDirPath.resolve("lastId.txt")
+                .toFile()
+                .readText()
+                .toInt()
+        }.getOrElse { 0 }
+
+    }
+
+    fun genNextId(): Int{
+        return (loadLastId() + 1).also{
+            saveLastId(it)
+        }
     }
 
     // 실제 파일 저장 메서드
