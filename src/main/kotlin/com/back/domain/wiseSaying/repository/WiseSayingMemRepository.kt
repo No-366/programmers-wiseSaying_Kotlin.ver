@@ -21,10 +21,24 @@ class WiseSayingMemRepository : WiseSayingRepository {
 
     override fun findById(id: Int): WiseSaying? = wiseSayings.firstOrNull { it.id == id }
 
-    override fun delete(wiseSaying: WiseSaying) = wiseSayings.remove(wiseSaying)
+    override fun delete(wiseSaying: WiseSaying){
+        wiseSayings.remove(wiseSaying)
+    }
     override fun clear() {
         lastId = 0
         wiseSayings.clear()
+    }
+
+    override fun build() {
+
+    }
+
+    override fun findByAuthorLike(s: String): List<WiseSaying> {
+        return listOf()
+    }
+
+    override fun findByAuthorContent(s: String): List<WiseSaying> {
+        return listOf()
     }
 
 }

@@ -24,4 +24,25 @@ object JsonUtil {
                 key to value
             }.toMap()
     }
+
+    // Map 리스트를 JSON 문자열로 변환
+    fun toString(mapList: List<Map<String, Any?>>): String {
+        return mapList.joinToString(
+            prefix = "[\n", separator = ",\n", postfix = "\n]"
+        ) { map -> toString(map).prependIndent("    ") }
+    }
+
+    // Map을 JSON 문자열로 변환
+    fun toString(map: Map<String, Any?>): String {
+        return map.entries.joinToString(
+            prefix = "{\n", separator = ",\n", postfix = "\n}"
+        ) { (key, value) ->
+            val formattedKey = "\"$key\""
+            val formattedValue = when (value) {
+                is String -> "\"$value\""
+                else -> value
+            }
+            "    $formattedKey: $formattedValue"
+        }
+    }
 }

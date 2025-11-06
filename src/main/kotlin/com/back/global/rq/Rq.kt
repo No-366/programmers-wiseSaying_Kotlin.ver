@@ -30,6 +30,10 @@ class Rq(
         return paramMap[key]
     }
 
+    fun getParamValue(key: String, defaultValue: String): String {
+        return paramMap[key] ?: defaultValue
+    }
+
     fun getParamValueAsInt(key: String, defaultValue: Int): Int {
         return getParamValue(key)
             ?.toIntOrNull() // 문자를 숫자로 ( 숫자로 못바꾸면 널로)
