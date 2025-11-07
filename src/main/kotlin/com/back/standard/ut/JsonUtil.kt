@@ -1,4 +1,4 @@
-package com.back.global.standard.ut
+package com.back.standard.ut
 
 
 // 유틸은 상태값을 갖지 않는 오브젝트로 만들어주는것이 좋다

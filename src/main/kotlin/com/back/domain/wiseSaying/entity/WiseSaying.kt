@@ -1,6 +1,6 @@
 package com.back.domain.wiseSaying.entity
 
-import com.back.global.standard.ut.JsonUtil.jsonStrToMap
+import com.back.standard.ut.JsonUtil.jsonStrToMap
 
 data class WiseSaying(
     var id: Int = 0,

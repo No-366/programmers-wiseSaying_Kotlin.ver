@@ -2,7 +2,8 @@ package com.back.domain.wiseSaying.repository
 
 import com.back.domain.wiseSaying.entity.WiseSaying
 import com.back.global.appConfig.AppConfig
-import com.back.global.standard.ut.JsonUtil
+import com.back.standard.dto.Page
+import com.back.standard.ut.JsonUtil
 import java.nio.file.Path
 
 class WiseSayingFileRepository : WiseSayingRepository {
@@ -78,6 +79,7 @@ class WiseSayingFileRepository : WiseSayingRepository {
             ?.filter{it.name.endsWith(".json")} // 이름이 .json으로 끝나는 파일만 필터링
             ?.map{it.readText()} // 각 JSON파일을 읽어서 문자열로 변환
             ?.map(WiseSaying.Companion::fromJsonStr) // fromJosnStr이라는 정적/컴패니언 함수를 리스트의 각 요소에 적용 -> JSON 문자열이 WiseSaying 객체로 파싱
+            ?.sortedByDescending{ it.id }
             .orEmpty() // 이전단계가 null이면 빈 리스트로 대체, 최종적으로 null 이 아닌 리스트를 보장
 
     }
@@ -99,7 +101,7 @@ class WiseSayingFileRepository : WiseSayingRepository {
     }
 
     override fun clear() {
-        TODO("Not yet implemented")
+
     }
 
     override fun build() {
@@ -145,5 +147,34 @@ class WiseSayingFileRepository : WiseSayingRepository {
 
     override fun findByAuthorContent(contentLike: String): List<WiseSaying> {
         return filterByKeyword(contentLike){it.content}// ==> filterByKeyword(contentLike, (wiseSaying> -> {wiseSaying.content})
+    }
+
+    override fun findByKeywordPaged(
+        keywordType: String,
+        keyword: String,
+        itemsPerPage: Int,
+        pageNo: Int
+    ): Page<WiseSaying> {
+
+        val wiseSayings = when (keywordType) {
+            "author" -> findByAuthorLike("%$keyword%")
+            else -> findByAuthorContent("%$keyword%")
+        }
+
+        val content = wiseSayings
+            .drop((pageNo - 1) * itemsPerPage)
+            .take(itemsPerPage)
+
+        return Page(wiseSayings.size, itemsPerPage, pageNo, keywordType, keyword, content)
+    }
+
+    override fun findAllPaged(itemsPerPage: Int, pageNo: Int): Page<WiseSaying> {
+        val wiseSayings = findAll()
+
+        val content = wiseSayings
+            .drop((pageNo - 1) * itemsPerPage)
+            .take(itemsPerPage)
+
+        return Page(wiseSayings.size, itemsPerPage, pageNo, "", "", content)
     }
 }
